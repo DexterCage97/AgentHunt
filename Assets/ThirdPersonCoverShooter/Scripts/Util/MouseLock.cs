@@ -12,10 +12,10 @@ namespace CoverShooter
 
         private void LateUpdate()
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (InputHandler.Instance.cancelInput)
                 _isLocked = false;
 
-            if (Input.GetMouseButtonDown(0))
+            if (InputHandler.Instance.fireInput)
                 _isLocked = true;
 
             if (_isLocked)

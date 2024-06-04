@@ -24,8 +24,7 @@ namespace CoverShooter
         /// <summary>
         /// Name of the message.
         /// </summary>
-        [Tooltip("Name of the message.")]
-        public string Message;
+        [Tooltip("Name of the message.")] public string Message;
     }
 
     /// <summary>
@@ -88,15 +87,13 @@ namespace CoverShooter
         /// <summary>
         /// Multiplier for horizontal camera rotation.
         /// </summary>
-        [Tooltip("Multiplier for horizontal camera rotation.")]
-        [Range(0, 10)]
+        [Tooltip("Multiplier for horizontal camera rotation.")] [Range(0, 10)]
         public float HorizontalRotateSpeed = 2.0f;
 
         /// <summary>
         /// Multiplier for vertical camera rotation.
         /// </summary>
-        [Tooltip("Multiplier for vertical camera rotation.")]
-        [Range(0, 10)]
+        [Tooltip("Multiplier for vertical camera rotation.")] [Range(0, 10)]
         public float VerticalRotateSpeed = 1.0f;
 
         /// <summary>
@@ -193,8 +190,8 @@ namespace CoverShooter
 
         protected virtual void UpdateMovement()
         {
-            var local = Input.GetAxis("Horizontal") * Vector3.right +
-                        Input.GetAxis("Vertical") * Vector3.forward;
+            var local = InputHandler.Instance.movementInput.x * Vector3.right +
+                        InputHandler.Instance.movementInput.y * Vector3.forward;
 
             var movement = new CharacterMovement();
             movement.Direction = getMovementDirection(local);
@@ -208,14 +205,14 @@ namespace CoverShooter
             {
                 if ((_motor.ActiveWeapon.Gun != null || _motor.ActiveWeapon.HasMelee) && FastMovement)
                 {
-                    if (Input.GetButton("Run") && !_motor.IsCrouching)
+                    if (InputHandler.Instance.runInput && !_motor.IsCrouching)
                         movement.Magnitude = 2.0f;
                     else
                         movement.Magnitude = 1.0f;
                 }
                 else
                 {
-                    if (Input.GetButton("Run"))
+                    if (InputHandler.Instance.runInput)
                         movement.Magnitude = 1.0f;
                     else
                         movement.Magnitude = 0.5f;
@@ -227,10 +224,10 @@ namespace CoverShooter
 
         protected virtual void UpdateClimbing()
         {
-            if (Input.GetButtonDown("Climb"))
+            if (InputHandler.Instance.climbInput)
             {
-                var direction = Input.GetAxis("Horizontal") * Vector3.right +
-                                Input.GetAxis("Vertical") * Vector3.forward;
+                var direction = InputHandler.Instance.movementInput.x * Vector3.right +
+                                InputHandler.Instance.movementInput.y * Vector3.forward;
 
                 if (direction.magnitude > float.Epsilon)
                 {
@@ -246,16 +243,16 @@ namespace CoverShooter
 
         protected virtual void UpdateCover()
         {
-            if (Input.GetButtonDown("TakeCover"))
+            if (InputHandler.Instance.takecoverInput)
                 _controller.InputTakeCover();
         }
 
         protected virtual void UpdateJumping()
         {
-            if (Input.GetButtonDown("Jump"))
+            if (InputHandler.Instance.jumpInput)
             {
-                var direction = Input.GetAxis("Horizontal") * Vector3.right +
-                                Input.GetAxis("Vertical") * Vector3.forward;
+                var direction = InputHandler.Instance.movementInput.x * Vector3.right +
+                                InputHandler.Instance.movementInput.y * Vector3.forward;
 
                 if (direction.magnitude > float.Epsilon)
                     _controller.InputJump(Util.HorizontalAngle(direction) + aimAngle);
@@ -266,7 +263,7 @@ namespace CoverShooter
 
         protected virtual void UpdateCrouching()
         {
-            if (Input.GetButton("Crouch"))
+            if (InputHandler.Instance.crouchInput)
                 _controller.InputCrouch();
         }
 
@@ -274,43 +271,29 @@ namespace CoverShooter
         {
             if (_motor.HasGrenadeInHand)
             {
-                if (Input.GetButtonDown("Fire"))
+                if (InputHandler.Instance.fireInput)
                     _controller.InputThrowGrenade();
 
-                if (Input.GetButtonDown("Cancel"))
+                if (InputHandler.Instance.cancelInput)
                     _controller.InputCancelGrenade();
             }
 
-            if (Input.GetButton("Grenade"))
+            if (InputHandler.Instance.grenadeInput)
                 _controller.InputTakeGrenade();
         }
 
         protected virtual void UpdateAttack()
         {
-            if (Input.GetButtonDown("Fire"))
-                _controller.FireInput = true;
+            _controller.FireInput = InputHandler.Instance.fireInput;
+            _controller.ZoomInput = InputHandler.Instance.zoomInput;
+            _controller.BlockInput = InputHandler.Instance.blockInput;
 
-            if (Input.GetButtonUp("Fire"))
-                _controller.FireInput = false;
-
-            if (Input.GetButtonDown("Melee"))
+            if (InputHandler.Instance.meleeInput)
                 _controller.InputMelee();
-
-            if (Input.GetButtonDown("Zoom"))
-                _controller.ZoomInput = true;
-
-            if (Input.GetButtonUp("Zoom"))
-                _controller.ZoomInput = false;
-
-            if (Input.GetButtonDown("Block"))
-                _controller.BlockInput = true;
-
-            if (Input.GetButtonUp("Block"))
-                _controller.BlockInput = false;
 
             if (_controller.IsZooming)
             {
-                if (Input.GetButtonDown("Scope"))
+                if (InputHandler.Instance.scopeInput)
                     _controller.ScopeInput = !_controller.ScopeInput;
             }
             else
@@ -324,7 +307,7 @@ namespace CoverShooter
             if (_timeS > 0) _timeS -= Time.deltaTime;
             if (_timeD > 0) _timeD -= Time.deltaTime;
 
-            if (Input.GetButtonDown("RollForward"))
+            if (InputHandler.Instance.rollForwardInput)
             {
                 if (_timeW > float.Epsilon)
                 {
@@ -339,7 +322,7 @@ namespace CoverShooter
                     _timeW = DoubleTapDelay;
             }
 
-            if (Input.GetButtonDown("RollLeft"))
+            if (InputHandler.Instance.rollLeftInput)
             {
                 if (_timeA > float.Epsilon)
                 {
@@ -354,7 +337,7 @@ namespace CoverShooter
                     _timeA = DoubleTapDelay;
             }
 
-            if (Input.GetButtonDown("RollBackward"))
+            if (InputHandler.Instance.rollBackwardInput)
             {
                 if (_timeS > float.Epsilon)
                 {
@@ -369,7 +352,7 @@ namespace CoverShooter
                     _timeS = DoubleTapDelay;
             }
 
-            if (Input.GetButtonDown("RollRight"))
+            if (InputHandler.Instance.rollRightInput)
             {
                 if (_timeD > float.Epsilon)
                 {
@@ -387,25 +370,74 @@ namespace CoverShooter
 
         protected virtual void UpdateWeapons()
         {
-            if (Input.GetKey(KeyCode.Alpha1)) { _motor.InputCancelGrenade(); inputWeapon(0); }
-            if (Input.GetKey(KeyCode.Alpha2)) { _motor.InputCancelGrenade(); inputWeapon(1); }
-            if (Input.GetKey(KeyCode.Alpha3)) { _motor.InputCancelGrenade(); inputWeapon(2); }
-            if (Input.GetKey(KeyCode.Alpha4)) { _motor.InputCancelGrenade(); inputWeapon(3); }
-            if (Input.GetKey(KeyCode.Alpha5)) { _motor.InputCancelGrenade(); inputWeapon(4); }
-            if (Input.GetKey(KeyCode.Alpha6)) { _motor.InputCancelGrenade(); inputWeapon(5); }
-            if (Input.GetKey(KeyCode.Alpha7)) { _motor.InputCancelGrenade(); inputWeapon(6); }
-            if (Input.GetKey(KeyCode.Alpha8)) { _motor.InputCancelGrenade(); inputWeapon(7); }
-            if (Input.GetKey(KeyCode.Alpha9)) { _motor.InputCancelGrenade(); inputWeapon(8); }
-            if (Input.GetKey(KeyCode.Alpha0)) { _motor.InputCancelGrenade(); inputWeapon(9); }
+            if (InputHandler.Instance.updateWeapon1Input)
+            {
+                _motor.InputCancelGrenade();
+                inputWeapon(0);
+            }
 
-            if (Input.mouseScrollDelta.y < 0)
+            if (InputHandler.Instance.updateWeapon2Input)
+            {
+                _motor.InputCancelGrenade();
+                inputWeapon(1);
+            }
+
+            if (InputHandler.Instance.updateWeapon3Input)
+            {
+                _motor.InputCancelGrenade();
+                inputWeapon(2);
+            }
+
+            if (InputHandler.Instance.updateWeapon4Input)
+            {
+                _motor.InputCancelGrenade();
+                inputWeapon(3);
+            }
+
+            if (InputHandler.Instance.updateWeapon5Input)
+            {
+                _motor.InputCancelGrenade();
+                inputWeapon(4);
+            }
+
+            if (InputHandler.Instance.updateWeapon6Input)
+            {
+                _motor.InputCancelGrenade();
+                inputWeapon(5);
+            }
+
+            if (InputHandler.Instance.updateWeapon7Input)
+            {
+                _motor.InputCancelGrenade();
+                inputWeapon(6);
+            }
+
+            if (InputHandler.Instance.updateWeapon8Input)
+            {
+                _motor.InputCancelGrenade();
+                inputWeapon(7);
+            }
+
+            if (InputHandler.Instance.updateWeapon9Input)
+            {
+                _motor.InputCancelGrenade();
+                inputWeapon(8);
+            }
+
+            if (InputHandler.Instance.updateWeapon0Input)
+            {
+                _motor.InputCancelGrenade();
+                inputWeapon(9);
+            }
+
+            if (InputHandler.Instance.mouseScrollDeltaInput.y < 0)
             {
                 if (currentWeapon == 0 && _inventory != null)
                     inputWeapon(_inventory.Weapons.Length);
                 else
                     inputWeapon(currentWeapon - 1);
             }
-            else if (Input.mouseScrollDelta.y > 0)
+            else if (InputHandler.Instance.mouseScrollDeltaInput.y > 0)
             {
                 if (_inventory != null && currentWeapon == _inventory.Weapons.Length)
                     inputWeapon(0);
@@ -442,7 +474,7 @@ namespace CoverShooter
 
         protected virtual void UpdateReload()
         {
-            if (Input.GetButton("Reload"))
+            if (InputHandler.Instance.reloadInput)
                 _controller.InputReload();
         }
 
@@ -467,8 +499,8 @@ namespace CoverShooter
 
             if (DirectionalMovement && !_motor.IsAiming && !_controller.ZoomInput && !_controller.FireInput)
             {
-                var direction = Input.GetAxis("Horizontal") * camera.transform.right +
-                                Input.GetAxis("Vertical") * camera.transform.forward;
+                var direction = InputHandler.Instance.movementInput.x * camera.transform.right +
+                                InputHandler.Instance.movementInput.y * camera.transform.forward;
 
                 _controller.BodyTargetInput = _motor.transform.position + direction * 16;
             }
@@ -499,8 +531,8 @@ namespace CoverShooter
                         scale = ZoomRotateMultiplier * (1.0f - camera.Zoom / camera.StateFOV);
                 }
 
-                camera.Horizontal += Input.GetAxis("Mouse X") * HorizontalRotateSpeed * scale;
-                camera.Vertical -= Input.GetAxis("Mouse Y") * VerticalRotateSpeed * scale;
+                camera.Horizontal += InputHandler.Instance.mouseMovementInput.x * HorizontalRotateSpeed * scale;
+                camera.Vertical -= InputHandler.Instance.mouseMovementInput.y * VerticalRotateSpeed * scale;
                 camera.UpdatePosition();
             }
 
