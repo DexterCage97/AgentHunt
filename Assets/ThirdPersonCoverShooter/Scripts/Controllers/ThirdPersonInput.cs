@@ -171,6 +171,10 @@ namespace CoverShooter
         {
             StartMovement = false;
             splineprojector.enabled = false;
+            Camera.IsInCover = true;
+            inputWeapon(currentWeapon+1);
+          //  _controller.ZoomInput = true;
+            //_controller.ZoomInput = false;
         }
 
         private void Update()
@@ -466,9 +470,9 @@ namespace CoverShooter
             else if (InputHandler.Instance.mouseScrollDeltaInput.y > 0)
             {
                 if (_inventory != null && currentWeapon == _inventory.Weapons.Length)
-                    inputWeapon(0);
+                { inputWeapon(0);}
                 else
-                    inputWeapon(currentWeapon + 1);
+                { inputWeapon(currentWeapon + 1);}
             }
         }
 
@@ -515,7 +519,7 @@ namespace CoverShooter
             var inaccurateTarget = camera.CalculateAimTarget(false);
             var accurateTarget = Util.GetClosestStaticHit(camera.transform.position, inaccurateTarget, 0);
 
-            if (_motor.IsFiringFromCamera && _motor.ActiveWeapon.Gun != null)
+            if (_motor.isFiringFromCamera && _motor.ActiveWeapon.Gun != null)
             {
                 var preciseTarget = camera.CalculateAimTarget(true);
                 var preciseHit = Util.GetClosestStaticHit(camera.transform.position, preciseTarget, 0);
@@ -565,8 +569,8 @@ namespace CoverShooter
                 if (StartMovement)
                 {
                     horVal = InputHandler.Instance.mouseMovementInput.x * HorizontalRotateSpeed * scale;
-                   // verVal = InputHandler.Instance.mouseMovementInput.y * VerticalRotateSpeed * scale;
-                  //  horVal = 0;
+                    // verVal = InputHandler.Instance.mouseMovementInput.y * VerticalRotateSpeed * scale;
+                    //  horVal = 0;
                     verVal = 0;
                 }
                 else
@@ -574,6 +578,7 @@ namespace CoverShooter
                     horVal = InputHandler.Instance.mouseMovementInput.x * HorizontalRotateSpeed * scale;
                     verVal = InputHandler.Instance.mouseMovementInput.y * VerticalRotateSpeed * scale;
                 }
+
 //print(horVal);
                 camera.Horizontal += horVal;
                 camera.Vertical -= verVal;

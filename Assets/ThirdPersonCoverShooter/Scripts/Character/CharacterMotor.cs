@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace CoverShooter
 {
@@ -1133,9 +1134,10 @@ namespace CoverShooter
         /// <summary>
         /// Distance below feet to check for ground.
         /// </summary>
+        [FormerlySerializedAs("GroundThreshold")]
         [Tooltip("Distance below feet to check for ground.")]
         [Range(0, 1)]
-        public float GroundThreshold = 0.3f;
+        public float groundThreshold = 0.3f;
 
         /// <summary>
         /// Minimal height to trigger state of falling. It’s ignored when jumping over gaps.
@@ -1167,8 +1169,8 @@ namespace CoverShooter
         /// <summary>
         /// Sets the origin of bullet raycasts, either a camera or an end of a gun.
         /// </summary>
-        [Tooltip("Sets the origin of bullet raycasts, either a camera or an end of a gun.")]
-        public bool IsFiringFromCamera = true;
+        [FormerlySerializedAs("IsFiringFromCamera")] [Tooltip("Sets the origin of bullet raycasts, either a camera or an end of a gun.")]
+        public bool isFiringFromCamera = true;
 
         /// <summary>
         /// Gun accuracy increase when zooming in. Multiplier gun error.
@@ -3104,7 +3106,7 @@ namespace CoverShooter
         public void InputStandLeft()
         {
             _wantsToFaceInADirection = true;
-            _cover.StandLeft();
+            _cover.StandLeft(_cover.Main.IsAlwaysLeft);
         }
 
         /// <summary>
@@ -3113,7 +3115,7 @@ namespace CoverShooter
         public void InputStandRight()
         {
             _wantsToFaceInADirection = true;
-            _cover.StandRight();
+            _cover.StandRight(_cover.Main.IsAlwaysLeft);
         }
 
         /// <summary>
@@ -4803,9 +4805,9 @@ namespace CoverShooter
                         if (!_wantsToFaceInADirection && _cover.Main != null)
                         {
                             if (_cover.Main.IsLeft(transform.eulerAngles.y))
-                                _cover.StandLeft();
+                                _cover.StandLeft(_cover.Main.IsAlwaysLeft);
                             else
-                                _cover.StandRight();
+                                _cover.StandRight(_cover.Main.IsAlwaysLeft);
 
                             _directionChangeDelay = CoverSettings.DirectionChangeDelay;
                         }
@@ -5423,7 +5425,7 @@ namespace CoverShooter
 
                             if (wasLow && IsInTallCover)
                                 if (_cover.Main.IsRight(_horizontalAngle, -30))
-                                    _cover.StandRight();
+                                    _cover.StandRight(_cover.Main.IsAlwaysLeft);
                         }
                     }
                     else if (_cover.HasRightAdjacent &&
@@ -5446,7 +5448,7 @@ namespace CoverShooter
 
                             if (wasLow && IsInTallCover)
                                 if (_cover.Main.IsLeft(_horizontalAngle, -30))
-                                    _cover.StandLeft();
+                                    _cover.StandLeft(_cover.Main.IsAlwaysLeft);
                         }
                     }
                     else if (!_cover.Main.IsFrontField(intendedWalkAngle, 360 - CoverSettings.ExitBack))
@@ -5472,7 +5474,7 @@ namespace CoverShooter
                             if (_cover.IsStandingRight)
                             {
                                 _directionChangeDelay = CoverSettings.DirectionChangeDelay;
-                                _cover.StandLeft();
+                                _cover.StandLeft(_cover.Main.IsAlwaysLeft);
                             }
                         }
                         else if (_cover.Main.IsRight(intendedWalkAngle, 0))
@@ -5480,7 +5482,7 @@ namespace CoverShooter
                             if (_cover.IsStandingLeft)
                             {
                                 _directionChangeDelay = CoverSettings.DirectionChangeDelay;
-                                _cover.StandRight();
+                                _cover.StandRight(_cover.Main.IsAlwaysLeft);
                             }
                         }
                     }
@@ -5654,10 +5656,10 @@ namespace CoverShooter
                         if (IsMoving)
                         {
                             if (_cover.Main.IsRight(angle, 50))
-                                _cover.StandRight();
+                                _cover.StandRight(_cover.Main.IsAlwaysLeft);
                         }
                         else if ((_cover.Main.IsRight(angle, 20) && (!IsZooming || IsByAnOpenRightCorner)) || _cover.Main.IsRight(angle, 60))
-                            _cover.StandRight();
+                            _cover.StandRight(_cover.Main.IsAlwaysLeft);
                     }
                 }
                 else if (_cover.HasRightAdjacent &&
@@ -5667,17 +5669,17 @@ namespace CoverShooter
                     {
                         var wasLow = IsInLowCover;
 
-                        _cover.StandRight();
+                        _cover.StandRight(_cover.Main.IsAlwaysLeft);
                         _cover.MoveToRightAdjacent();
 
                         if (_wantsToAim && wasLow && IsInTallCover)
                             _backOffset = CoverOffsetState.Using;
                     }
                     else
-                        _cover.StandLeft();
+                        _cover.StandLeft(_cover.Main.IsAlwaysLeft);
                 }
                 else
-                    _cover.StandRight();
+                    _cover.StandRight(_cover.Main.IsAlwaysLeft);
             }
             else if (_cover.Main.IsLeft(angle, 0))
             {
@@ -5688,10 +5690,10 @@ namespace CoverShooter
                         if (IsMoving)
                         {
                             if (_cover.Main.IsLeft(angle, 50))
-                                _cover.StandLeft();
+                                _cover.StandLeft(_cover.Main.IsAlwaysLeft);
                         }
                         else if ((_cover.Main.IsLeft(angle, 20) && (!IsZooming || IsByAnOpenLeftCorner)) || _cover.Main.IsLeft(angle, 60))
-                            _cover.StandLeft();
+                            _cover.StandLeft(_cover.Main.IsAlwaysLeft);
                     }
                 }
                 else if (_cover.HasLeftAdjacent &&
@@ -5701,17 +5703,17 @@ namespace CoverShooter
                     {
                         var wasLow = IsInLowCover;
 
-                        _cover.StandLeft();
+                        _cover.StandLeft(_cover.Main.IsAlwaysLeft);
                         _cover.MoveToLeftAdjacent();
 
                         if (_wantsToAim && wasLow && IsInTallCover)
                             _backOffset = CoverOffsetState.Using;
                     }
                     else
-                        _cover.StandRight();
+                        _cover.StandRight(_cover.Main.IsAlwaysLeft);
                 }
                 else if (_cover.Main.IsLeft(angle, 20))
-                    _cover.StandLeft();
+                    _cover.StandLeft(_cover.Main.IsAlwaysLeft);
             }
 
             if (IsInTallCover)
@@ -6388,7 +6390,7 @@ namespace CoverShooter
             if (_vertical == null)
                 _vertical = gameObject.AddComponent<CharacterVertical>();
 
-            _vertical.Threshold = GroundThreshold;
+            _vertical.Threshold = groundThreshold;
 
             var highest = 0f;
             var start = _vertical.GetStart();
@@ -6446,7 +6448,7 @@ namespace CoverShooter
             if (_vertical == null)
                 _vertical = gameObject.AddComponent<CharacterVertical>();
 
-            _vertical.Threshold = GroundThreshold;
+            _vertical.Threshold = groundThreshold;
 
             for (int i = 0; i < _vertical.Count; i++)
             {

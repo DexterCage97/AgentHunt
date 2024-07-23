@@ -84,6 +84,7 @@ namespace CoverShooter
             get { return transform.forward; }
         }
 
+        public bool IsAlwaysLeft;
         /// <summary>
         /// Direction pointing right from a character along the wall.
         /// </summary>

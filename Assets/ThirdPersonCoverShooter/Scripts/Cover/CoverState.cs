@@ -56,10 +56,7 @@ namespace CoverShooter
         /// </summary>
         public bool IsStandingLeft
         {
-            get
-            {
-                return Mathf.DeltaAngle(MovementAngle, ForwardAngle) > 0;
-            }
+            get { return Mathf.DeltaAngle(MovementAngle, ForwardAngle) > 0; }
         }
 
         /// <summary>
@@ -67,10 +64,7 @@ namespace CoverShooter
         /// </summary>
         public bool IsStandingRight
         {
-            get
-            {
-                return Mathf.DeltaAngle(MovementAngle, ForwardAngle) < 0;
-            }
+            get { return Mathf.DeltaAngle(MovementAngle, ForwardAngle) < 0; }
         }
 
         /// <summary>
@@ -260,6 +254,7 @@ namespace CoverShooter
             else
                 Clear();
 
+
             if (In && !wasIn)
                 return true;
             else
@@ -280,7 +275,8 @@ namespace CoverShooter
 
             if (Main != null && Main != closest)
             {
-                if (closest == null || (!Main.IsLeftAdjacent(closest, observer) && !Main.IsRightAdjacent(closest, observer)))
+                if (closest == null ||
+                    (!Main.IsLeftAdjacent(closest, observer) && !Main.IsRightAdjacent(closest, observer)))
                     Main = null;
             }
 
@@ -309,17 +305,17 @@ namespace CoverShooter
         /// <summary>
         /// Sets the facing direction to right.
         /// </summary>
-        public void StandRight()
+        public void StandRight(bool isAlwaysLeft)
         {
-            Direction = 1;
+            Direction = isAlwaysLeft ? -1 : 1;
         }
 
         /// <summary>
         /// Sets the facing direction to left.
         /// </summary>
-        public void StandLeft()
+        public void StandLeft(bool isAlwaysLeft)
         {
-            Direction = -1;
+            Direction = isAlwaysLeft ? -1 : 1;
         }
 
         /// <summary>

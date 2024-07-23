@@ -89,14 +89,12 @@ namespace CoverShooter
         /// <summary>
         /// Horizontal orientation of the camera in degrees.
         /// </summary>
-        [HideInInspector]
-        public float Horizontal;
+        [HideInInspector] public float Horizontal;
 
         /// <summary>
         /// Vertical orientation of the camera in degrees.
         /// </summary>
-        [HideInInspector]
-        public float Vertical;
+        [HideInInspector] public float Vertical;
 
         private Vector3 _pivot;
         private Vector3 _offset;
@@ -227,14 +225,15 @@ namespace CoverShooter
             return _controller;
         }
 
-        private void calculatePositionAndTarget(float horizontal, float vertical, Vector3 pivot, Vector3 offset, out Vector3 position, out Vector3 target)
+        private void calculatePositionAndTarget(float horizontal, float vertical, Vector3 pivot, Vector3 offset,
+            out Vector3 position, out Vector3 target)
         {
-            var rotation = Quaternion.Euler(vertical, horizontal, 0);
-            var transformPivot = _motorRotation * pivot + _motorPosition;
-
-            position = transformPivot + rotation * offset;
+            Quaternion rotation = Quaternion.Euler(vertical, horizontal, 0);
+            Vector3 transformedPivot = _motorRotation * pivot + _motorPosition;
+            position = transformedPivot + rotation * offset;
             target = _motorPosition + pivot + rotation * Vector3.forward * 10;
         }
+
 
         /// <summary>
         /// Calculates target position to be aimed at in the world.
@@ -242,13 +241,15 @@ namespace CoverShooter
         public Vector3 CalculateAimTarget(bool includeRecoil)
         {
             Vector3 cameraPosition, cameraTarget;
-            calculatePositionAndTarget(Horizontal, Vertical, _currentPivot, _currentOffset, out cameraPosition, out cameraTarget);
+            calculatePositionAndTarget(Horizontal, Vertical, _currentPivot, _currentOffset, out cameraPosition,
+                out cameraTarget);
 
             if (ShakingAffectsAim && includeRecoil)
             {
                 var vector = cameraTarget - cameraPosition;
 
-                cameraTarget += Quaternion.AngleAxis(_shake.x, transform.right) * Quaternion.AngleAxis(_shake.y, transform.up) * vector;
+                cameraTarget += Quaternion.AngleAxis(_shake.x, transform.right) *
+                                Quaternion.AngleAxis(_shake.y, transform.up) * vector;
             }
 
             return cameraTarget;
@@ -257,44 +258,40 @@ namespace CoverShooter
         /// <summary>
         /// Update camera position and orientation based on the latest known information.
         /// </summary>
+        public float MinHorizontalAngle = -60f; // Example minimum allowed horizontal angle
+
+        public float MaxHorizontalAngle = 30f; // Example maximum allowed horizontal angle
+        public float MinVerticalAngle = -10f; // Example minimum allowed vertical angle
+        public float MaxVerticalAngle = 45f; // Example maximum allowed vertical angle
+
+        public bool IsInCover = false; // Always in cover
+
         public void UpdatePosition()
         {
             Vector3 cameraPosition, cameraTarget;
-            calculatePositionAndTarget(Horizontal, Vertical, _currentPivot, _currentOffset, out cameraPosition, out cameraTarget);
+            calculatePositionAndTarget(Horizontal, Vertical, _currentPivot, _currentOffset, out cameraPosition,
+                out cameraTarget);
 
-            var controller = Target.GetComponent<ThirdPersonController>();
-            var gun = Target.ActiveWeapon.Gun;
+            // Clamp the angles since the player is always in cover
 
-            if (gun != null && gun.Scope != null && (Target.IsScoping || (controller != null && controller.IsScoping)))
+            if (IsInCover)
             {
-                Target.InputLayer(Layers.Scope);
-                _wasScoped = true;
-                _obstacleFix = Util.Lerp(_obstacleFix, Vector3.zero, 20);
-            }
-            else
-            {
-                _wasScoped = false;
-
-                var forward = (cameraTarget - cameraPosition).normalized;
-
-                var colliderFixTarget = Vector3.zero;
-
-                if (AvoidObstacles && (!IgnoreObstaclesWhenZooming || !controller.IsZooming))
-                    colliderFixTarget = checkObstacles(cameraPosition, _motorPosition + Target.StandingHeight * Vector3.up, 0.1f);
-
-                _obstacleFix = Util.Lerp(_obstacleFix, colliderFixTarget, 6);
+                Horizontal = Mathf.Clamp(Horizontal, MinHorizontalAngle, MaxHorizontalAngle);
+                Vertical = Mathf.Clamp(Vertical, MinVerticalAngle, MaxVerticalAngle);
             }
 
-            cameraPosition += _obstacleFix;
+            calculatePositionAndTarget(Horizontal, Vertical, _currentPivot, _currentOffset, out cameraPosition,
+                out cameraTarget);
 
             transform.position = cameraPosition;
             transform.LookAt(cameraTarget);
 
+            // Apply camera shake if necessary
             var magnitude = Vector3.Distance(cameraPosition, cameraTarget);
-
             transform.localRotation *= Quaternion.Euler(_shake);
             cameraTarget = transform.position + transform.forward * magnitude;
         }
+
 
         private void LateUpdate()
         {
@@ -364,10 +361,12 @@ namespace CoverShooter
             if (Target == null)
                 return;
 
-            if ((Target.IsStandingLeftInCover && Target.IsByAnOpenLeftCorner) || (!Target.IsStandingLeftInCover && Target.IsByAnOpenRightCorner))
+            if ((Target.IsStandingLeftInCover && Target.IsByAnOpenLeftCorner) ||
+                (!Target.IsStandingLeftInCover && Target.IsByAnOpenRightCorner))
             {
                 Util.Lerp(ref _motorOffsetIntensity, 1, 6);
-                _motorOffset = Vector3.Lerp(_motorOffset, Target.ClosestCoverPosition - Target.transform.position, _motorOffsetIntensity);
+                _motorOffset = Vector3.Lerp(_motorOffset, Target.ClosestCoverPosition - Target.transform.position,
+                    _motorOffsetIntensity);
             }
             else
             {
@@ -404,7 +403,8 @@ namespace CoverShooter
             }
 
             var lookPosition = transform.position + transform.forward * 1000;
-            var closestHit = Util.GetClosestHit(transform.position, lookPosition, Vector3.Distance(transform.position, Target.Top), Target.gameObject);
+            var closestHit = Util.GetClosestHit(transform.position, lookPosition,
+                Vector3.Distance(transform.position, Target.Top), Target.gameObject);
 
             _lastTargetDistance = Vector3.Distance(transform.position, closestHit);
 
@@ -417,9 +417,10 @@ namespace CoverShooter
 
             if ((_couldCornerAim || !Target.IsMoving) &&
                 Target.IsInCover &&
-                ((Target.IsInTallCover && Target.CoverSettings.CanUseTallCorners) || (Target.IsInLowCover && Target.CoverSettings.CanUseLowCorners)) &&
+                ((Target.IsInTallCover && Target.CoverSettings.CanUseTallCorners) ||
+                 (Target.IsInLowCover && Target.CoverSettings.CanUseLowCorners)) &&
                 Target.Cover.IsFrontField(Horizontal + _horizontalDifference, 180) &&
-                ((Target.IsNearLeftCorner && Target.IsStandingLeftInCover && Target.Cover.OpenLeft) || 
+                ((Target.IsNearLeftCorner && Target.IsStandingLeftInCover && Target.Cover.OpenLeft) ||
                  (Target.IsNearRightCorner && !Target.IsStandingLeftInCover && Target.Cover.OpenRight)))
             {
                 couldCornerAim = true;
@@ -611,12 +612,15 @@ namespace CoverShooter
                 Vector3 previousPosition, previousTarget;
                 Vector3 nextPosition, nextTarget;
 
-                calculatePositionAndTarget(Horizontal + _horizontalDifference, Vertical + _verticalDifference, _pivot, _offset, out previousPosition, out previousTarget);
-                calculatePositionAndTarget(Horizontal + _horizontalDifference, Vertical + _verticalDifference, newPivot, newOffset, out nextPosition, out nextTarget);
+                calculatePositionAndTarget(Horizontal + _horizontalDifference, Vertical + _verticalDifference, _pivot,
+                    _offset, out previousPosition, out previousTarget);
+                calculatePositionAndTarget(Horizontal + _horizontalDifference, Vertical + _verticalDifference, newPivot,
+                    newOffset, out nextPosition, out nextTarget);
 
                 Vector3 target;
                 RaycastHit hit;
-                if (Physics.Raycast(previousPosition, (previousTarget - previousPosition).normalized, out hit) && Vector3.Distance(previousPosition, hit.point) > 2)
+                if (Physics.Raycast(previousPosition, (previousTarget - previousPosition).normalized, out hit) &&
+                    Vector3.Distance(previousPosition, hit.point) > 2)
                     target = hit.point;
                 else
                     target = previousTarget;
@@ -651,7 +655,7 @@ namespace CoverShooter
                 Target.InputSmoothRotation();
 
             Target.InputPreciseHands();
-            print(_stateName);
+//            print(_stateName);
         }
 
         private Vector3 checkObstacles(Vector3 camera, Vector3 target, float radius)
@@ -688,7 +692,8 @@ namespace CoverShooter
         private void raycast(Vector3 origin, Vector3 forward, float distance, ref float maxFix)
         {
             var ray = new Ray(origin, -forward);
-            var count = Physics.RaycastNonAlloc(ray, Util.Hits, distance, Layers.Geometry, QueryTriggerInteraction.Ignore);
+            var count = Physics.RaycastNonAlloc(ray, Util.Hits, distance, Layers.Geometry,
+                QueryTriggerInteraction.Ignore);
 
             for (int i = 0; i < count; i++)
             {
