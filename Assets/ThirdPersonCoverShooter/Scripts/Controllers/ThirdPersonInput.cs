@@ -1,4 +1,5 @@
 ﻿using System;
+using Dreamteck.Splines;
 using UnityEngine;
 
 namespace CoverShooter
@@ -144,13 +145,32 @@ namespace CoverShooter
         private float _backMoveIntensity = 1;
         private float _frontMoveIntensity = 1;
 
+        private SplineProjector splineprojector;
+
         private void Awake()
         {
+            splineprojector = GetComponent<SplineProjector>();
             _controller = GetComponent<ThirdPersonController>();
             _motor = GetComponent<CharacterMotor>();
             _inventory = GetComponent<CharacterInventory>();
 
             _controller.WaitForUpdateCall = true;
+        }
+
+        private void OnEnable()
+        {
+            splineprojector.onEndReached += splineEndReached;
+        }
+
+        private void OnDisable()
+        {
+            splineprojector.onEndReached -= splineEndReached;
+        }
+
+        private void splineEndReached()
+        {
+            StartMovement = false;
+            splineprojector.enabled = false;
         }
 
         private void Update()
@@ -188,11 +208,17 @@ namespace CoverShooter
                 }
         }
 
+
+        [SerializeField] private bool StartMovement;
+
         protected virtual void UpdateMovement()
         {
-            var local = InputHandler.Instance.movementInput.x * Vector3.right +
-                        InputHandler.Instance.movementInput.y * Vector3.forward;
+            // var local = InputHandler.Instance.movementInput.x * Vector3.right +
+            //          InputHandler.Instance.movementInput.y * Vector3.forward;
 
+            Vector3 local = StartMovement ? Vector3.forward : Vector3.zero;
+
+//            print(local);
             var movement = new CharacterMovement();
             movement.Direction = getMovementDirection(local);
 
@@ -517,6 +543,7 @@ namespace CoverShooter
             var camera = Camera;
             if (camera == null) return;
 
+
             if (Cursor.lockState == CursorLockMode.Locked || RotateWhenUnlocked)
             {
                 var scale = 1.0f;
@@ -531,12 +558,28 @@ namespace CoverShooter
                         scale = ZoomRotateMultiplier * (1.0f - camera.Zoom / camera.StateFOV);
                 }
 
-                camera.Horizontal += InputHandler.Instance.mouseMovementInput.x * HorizontalRotateSpeed * scale;
-                camera.Vertical -= InputHandler.Instance.mouseMovementInput.y * VerticalRotateSpeed * scale;
+
+                float horVal = 0;
+                float verVal = 0;
+
+                if (StartMovement)
+                {
+                    horVal = InputHandler.Instance.mouseMovementInput.x * HorizontalRotateSpeed * scale;
+                   // verVal = InputHandler.Instance.mouseMovementInput.y * VerticalRotateSpeed * scale;
+                  //  horVal = 0;
+                    verVal = 0;
+                }
+                else
+                {
+                    horVal = InputHandler.Instance.mouseMovementInput.x * HorizontalRotateSpeed * scale;
+                    verVal = InputHandler.Instance.mouseMovementInput.y * VerticalRotateSpeed * scale;
+                }
+//print(horVal);
+                camera.Horizontal += horVal;
+                camera.Vertical -= verVal;
                 camera.UpdatePosition();
             }
 
-            camera.UpdatePosition();
 
             _motor.InputVerticalMeleeAngle(camera.Vertical);
         }

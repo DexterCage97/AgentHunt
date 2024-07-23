@@ -5,7 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/ThirdPersonCoverShooter/Scenes/Third person cover NewAI (beta).unity
     guid: 1390ef9ede53691469093ed777fa4550
   - enabled: 0
@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/ThirdPersonCoverShooter/Scenes/Strategy scene PC (beta).unity
     guid: cb2a66a9cdb862b489d59f2fb018fbb6
+  - enabled: 1
+    path: Assets/BANK/Scenes/Agent47 Bank.unity
+    guid: bfc2af4f8e6820b418809d22025e22be
   m_configObjects: {}

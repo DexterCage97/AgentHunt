@@ -642,6 +642,17 @@
                 },
                 {
                     "name": "",
+                    "id": "df98dd03-9995-4eee-a502-8d2255115d3f",
+                    "path": "<Touchscreen>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PlayerControlScheme",
+                    "action": "MouseMovement",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "e013ded4-9c03-4da0-9397-38dabc90245c",
                     "path": "<Mouse>/scroll",
                     "interactions": "",

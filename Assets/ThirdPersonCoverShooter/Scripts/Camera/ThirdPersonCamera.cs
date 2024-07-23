@@ -651,6 +651,7 @@ namespace CoverShooter
                 Target.InputSmoothRotation();
 
             Target.InputPreciseHands();
+            print(_stateName);
         }
 
         private Vector3 checkObstacles(Vector3 camera, Vector3 target, float radius)
