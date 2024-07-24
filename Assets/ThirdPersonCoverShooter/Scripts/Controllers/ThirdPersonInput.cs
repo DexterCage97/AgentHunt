@@ -172,8 +172,8 @@ namespace CoverShooter
             StartMovement = false;
             splineprojector.enabled = false;
             Camera.IsInCover = true;
-            inputWeapon(currentWeapon+1);
-          //  _controller.ZoomInput = true;
+            NextWeapon();
+            //  _controller.ZoomInput = true;
             //_controller.ZoomInput = false;
         }
 
@@ -312,10 +312,26 @@ namespace CoverShooter
                 _controller.InputTakeGrenade();
         }
 
+        public void EnableZoom()
+        {
+            _controller.ZoomInput = true;
+        }
+
+        public void EnableFire()
+        {
+            _controller.WeaponFire();
+        }
+
+        public void DisableZoom()
+        {
+            _controller.ZoomInput = false;
+        }
+
+        
         protected virtual void UpdateAttack()
         {
             _controller.FireInput = InputHandler.Instance.fireInput;
-            _controller.ZoomInput = InputHandler.Instance.zoomInput;
+           // _controller.ZoomInput = InputHandler.Instance.zoomInput;
             _controller.BlockInput = InputHandler.Instance.blockInput;
 
             if (InputHandler.Instance.meleeInput)
@@ -460,20 +476,26 @@ namespace CoverShooter
                 inputWeapon(9);
             }
 
-            if (InputHandler.Instance.mouseScrollDeltaInput.y < 0)
+            if (InputHandler.Instance.mouseScrollDeltaInput)
             {
-                if (currentWeapon == 0 && _inventory != null)
-                    inputWeapon(_inventory.Weapons.Length);
-                else
-                    inputWeapon(currentWeapon - 1);
+                NextWeapon();
             }
-            else if (InputHandler.Instance.mouseScrollDeltaInput.y > 0)
+        }
+
+        public void NextWeapon()
+        {
+            if (_inventory == null) return;
+//            print(currentWeapon);
+            if (currentWeapon == _inventory.Weapons.Length)
             {
-                if (_inventory != null && currentWeapon == _inventory.Weapons.Length)
-                { inputWeapon(0);}
-                else
-                { inputWeapon(currentWeapon + 1);}
+                inputWeapon(0);
             }
+            else
+            {
+                inputWeapon(currentWeapon + 1);
+            }
+
+        //    print(currentWeapon + "---" + _inventory.Weapons.Length);
         }
 
         private int currentWeapon
@@ -497,7 +519,9 @@ namespace CoverShooter
                 return;
 
             if (index <= 0 || (_inventory != null && index > _inventory.Weapons.Length))
-                _controller.InputUnequip();
+            {
+                _controller.InputEquip(_inventory.Weapons[0]);
+            }
             else if (_inventory != null && index <= _inventory.Weapons.Length)
                 _controller.InputEquip(_inventory.Weapons[index - 1]);
         }

@@ -62,7 +62,8 @@ namespace CoverShooter
         /// <summary>
         /// Time in seconds after a potential cover has been detected when the character automatically enters it.
         /// </summary>
-        [Tooltip("Time in seconds after a potential cover has been detected when the character automatically enters it.")]
+        [Tooltip(
+            "Time in seconds after a potential cover has been detected when the character automatically enters it.")]
         public float CoverEnterDelay = 0.1f;
 
         /// <summary>
@@ -164,62 +165,52 @@ namespace CoverShooter
         /// <summary>
         /// Sets the controller to start or stop firing.
         /// </summary>
-        [HideInInspector]
-        public bool FireInput;
+        [HideInInspector] public bool FireInput;
 
         /// <summary>
         /// Sets the controller to start and stop zooming.
         /// </summary>
-        [HideInInspector]
-        public bool ZoomInput;
+        [HideInInspector] public bool ZoomInput;
 
         /// <summary>
         /// Sets the controller to start and stop using scope.
         /// </summary>
-        [HideInInspector]
-        public bool ScopeInput;
+        [HideInInspector] public bool ScopeInput;
 
         /// <summary>
         /// Sets the controller to block melee attacks.
         /// </summary>
-        [HideInInspector]
-        public bool BlockInput;
+        [HideInInspector] public bool BlockInput;
 
         /// <summary>
         /// Sets the position the controller is rotated at.
         /// </summary>
-        [HideInInspector]
-        public Vector3 BodyTargetInput;
+        [HideInInspector] public Vector3 BodyTargetInput;
 
         /// <summary>
         /// Sets the position the controller is aiming at.
         /// </summary>
-        [HideInInspector]
-        public Vector3 AimTargetInput;
+        [HideInInspector] public Vector3 AimTargetInput;
 
         /// <summary>
         /// Sets the horizontal angle for aiming a grenade.
         /// </summary>
-        [HideInInspector]
-        public float GrenadeHorizontalAngleInput;
+        [HideInInspector] public float GrenadeHorizontalAngleInput;
 
         /// <summary>
         /// Sets the vertical angle for aiming a grenade.
         /// </summary>
-        [HideInInspector]
-        public float GrenadeVerticalAngleInput;
+        [HideInInspector] public float GrenadeVerticalAngleInput;
 
         /// <summary>
         /// Sets the movement for the controller.
         /// </summary>
-        [HideInInspector]
-        public CharacterMovement MovementInput;
+        [HideInInspector] public CharacterMovement MovementInput;
 
         /// <summary>
         /// Will the Update function be called manually by some other component (most likely ThirdPersonInput).
         /// </summary>
-        [HideInInspector]
-        public bool WaitForUpdateCall;
+        [HideInInspector] public bool WaitForUpdateCall;
 
         public enum Mode
         {
@@ -389,320 +380,315 @@ namespace CoverShooter
             {
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
                 case Mode.Default:
-                    {
-                        //// TRANSITIONS //////////////////////
+                {
+                    //// TRANSITIONS //////////////////////
 
-                        if (_motor.HasGrenadeInHand)
-                            return transitionAndPerform(Mode.Grenade);
+                    if (_motor.HasGrenadeInHand)
+                        return transitionAndPerform(Mode.Grenade);
 
-                        if (updateIsAiming())
-                            return transitionAndPerform(Mode.Aim);
+                    if (updateIsAiming())
+                        return transitionAndPerform(Mode.Aim);
 
-                        if (isSprinting())
-                            return transitionAndPerform(Mode.Sprint);
+                    if (isSprinting())
+                        return transitionAndPerform(Mode.Sprint);
 
-                        if (updateIsMelee())
-                            return transitionAndPerform(Mode.Melee);
+                    if (updateIsMelee())
+                        return transitionAndPerform(Mode.Melee);
 
-                        if (_motor.IsInCover)
-                            return transitionAndPerform(Mode.Cover);
+                    if (_motor.IsInCover)
+                        return transitionAndPerform(Mode.Cover);
 
-                        //// LOGIC //////////////////////
+                    //// LOGIC //////////////////////
 
-                        checkArmLift();
-                        checkReload();
-                        checkUnzoom();
-                        checkEquipment();
-                        checkJump();
-                        checkRoll();
-                        checkClimbOrVault();
-                        checkMovement(1);
-                        checkCover();
-                        checkGrenade();
-                        checkCrouch();
-                        checkMelee();
-
-                    } break;
+                    checkArmLift();
+                    checkReload();
+                    checkUnzoom();
+                    checkEquipment();
+                    checkJump();
+                    checkRoll();
+                    checkClimbOrVault();
+                    checkMovement(1);
+                    checkCover();
+                    checkGrenade();
+                    checkCrouch();
+                    checkMelee();
+                }
+                    break;
 
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
                 case Mode.Sprint:
-                    {
-                        //// TRANSITIONS //////////////////////
+                {
+                    //// TRANSITIONS //////////////////////
 
-                        if (_motor.HasGrenadeInHand)
-                            return transitionAndPerform(Mode.Grenade);
+                    if (_motor.HasGrenadeInHand)
+                        return transitionAndPerform(Mode.Grenade);
 
-                        if (updateIsAiming())
-                            return transitionAndPerform(Mode.Aim);
+                    if (updateIsAiming())
+                        return transitionAndPerform(Mode.Aim);
 
-                        if (!isSprinting())
-                            return transitionAndPerform(Mode.Default);
+                    if (!isSprinting())
+                        return transitionAndPerform(Mode.Default);
 
-                        //// LOGIC //////////////////////
+                    //// LOGIC //////////////////////
 
-                        lowerArms();
+                    lowerArms();
 
-                        checkReload();
-                        checkUnzoom();
-                        checkEquipment();
-                        checkJump();
-                        checkRoll();
-                        checkClimbOrVault();
-                        checkMovement(2);
-                        checkCover();
-                        checkGrenade();
-                        checkCrouch();
-                    }
+                    checkReload();
+                    checkUnzoom();
+                    checkEquipment();
+                    checkJump();
+                    checkRoll();
+                    checkClimbOrVault();
+                    checkMovement(2);
+                    checkCover();
+                    checkGrenade();
+                    checkCrouch();
+                }
                     break;
 
                 case Mode.Cover:
-                    {
-                        //// TRANSITIONS //////////////////////
+                {
+                    //// TRANSITIONS //////////////////////
 
-                        if (_motor.HasGrenadeInHand)
-                            return transitionAndPerform(Mode.Grenade);
+                    if (_motor.HasGrenadeInHand)
+                        return transitionAndPerform(Mode.Grenade);
 
-                        if (updateIsAiming())
-                            return transitionAndPerform(Mode.Aim);
+                    if (updateIsAiming())
+                        return transitionAndPerform(Mode.Aim);
 
-                        if (isSprinting())
-                            return transitionAndPerform(Mode.Sprint);
+                    if (isSprinting())
+                        return transitionAndPerform(Mode.Sprint);
 
-                        if (updateIsMelee())
-                            return transitionAndPerform(Mode.Melee);
+                    if (updateIsMelee())
+                        return transitionAndPerform(Mode.Melee);
 
-                        if (!_motor.IsInCover)
-                            return transitionAndPerform(Mode.Default);
+                    if (!_motor.IsInCover)
+                        return transitionAndPerform(Mode.Default);
 
-                        //// LOGIC //////////////////////
+                    //// LOGIC //////////////////////
 
-                        lowerArms();
+                    lowerArms();
 
-                        checkMelee();
-                        checkReload();
-                        checkUnzoom();
-                        checkEquipment();
-                        checkJump();
-                        checkRoll();
-                        checkClimbOrVault();
-                        checkMovement(1);
-                        checkGrenade();
-                        checkCrouch();
-                    } break;
+                    checkMelee();
+                    checkReload();
+                    checkUnzoom();
+                    checkEquipment();
+                    checkJump();
+                    checkRoll();
+                    checkClimbOrVault();
+                    checkMovement(1);
+                    checkGrenade();
+                    checkCrouch();
+                }
+                    break;
 
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
                 case Mode.Aim:
+                {
+                    //// TRANSITIONS //////////////////////
+
+                    if (!updateIsAiming())
+                        return transitionAndPerform(Mode.Default);
+
+                    //// LOGIC //////////////////////
+
+                    _noAimSustain = 0;
+
+                    if (AimWhenWalking && MovementInput.IsMoving)
+                        _aimSustain = AimSustain;
+                    else
+                        _aimSustain -= Time.deltaTime;
+
+                    checkZoom();
+                    checkEquipment();
+                    checkJump();
+                    checkRoll();
+                    checkClimbOrVault();
+                    checkMovement(1);
+                    checkCover();
+                    checkGrenade();
+                    checkCrouch();
+                    checkReload();
+                    checkMelee();
+
+                    if (CancelHurt)
+                        _motor.CancelAndPreventGetHit(0.3f);
+
+                    liftArms();
+
+                    _motor.SetBodyTarget(BodyTargetInput);
+                    _motor.SetAimTarget(AimTargetInput);
+
+                    if (ImmediateTurns)
+                        _motor.InputPossibleImmediateTurn();
+
+                    if (_motor.IsInCover)
+                        _motor.InputAimWhenLeavingCover();
+
+                    _motor.InputAim();
+                    if (FireInput)
+                        WeaponFire();
+
+                    if (_motor.IsWeaponScopeReady && ZoomInput)
                     {
-                        //// TRANSITIONS //////////////////////
+                        _aimSustain = AimSustain;
 
-                        if (!updateIsAiming())
-                            return transitionAndPerform(Mode.Default);
+                        _motor.InputZoom();
 
-                        //// LOGIC //////////////////////
-
-                        _noAimSustain = 0;
-
-                        if (AimWhenWalking && MovementInput.IsMoving)
-                            _aimSustain = AimSustain;
-                        else
-                            _aimSustain -= Time.deltaTime;
-
-                        checkZoom();
-                        checkEquipment();
-                        checkJump();
-                        checkRoll();
-                        checkClimbOrVault();
-                        checkMovement(1);
-                        checkCover();
-                        checkGrenade();
-                        checkCrouch();
-                        checkReload();
-                        checkMelee();
-
-                        if (CancelHurt)
-                            _motor.CancelAndPreventGetHit(0.3f);
-
-                        liftArms();
-
-                        _motor.SetBodyTarget(BodyTargetInput);
-                        _motor.SetAimTarget(AimTargetInput);
-
-                        if (ImmediateTurns)
-                            _motor.InputPossibleImmediateTurn();
-
-                        if (_motor.IsInCover)
-                            _motor.InputAimWhenLeavingCover();
-
-                        _motor.InputAim();
-
-                        if (_motor.IsWeaponReady && FireInput)
-                        {
-                            _aimSustain = AimSustain;
-
-                            var gun = _motor.ActiveWeapon.Gun;
-
-                            if (gun != null && gun.LoadedBulletsLeft <= 0)
-                                _motor.InputReload();
-                            else
-                                _motor.InputFire();
-                        }
-
-                        if (_motor.IsWeaponScopeReady && ZoomInput)
-                        {
-                            _aimSustain = AimSustain;
-
-                            _motor.InputZoom();
-
-                            if (_isScoping)
-                                _motor.InputScope();
-                        }
+                        if (_isScoping)
+                            _motor.InputScope();
                     }
+                }
                     break;
 
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
                 case Mode.Grenade:
+                {
+                    if (!_motor.HasGrenadeInHand)
+                        return transitionAndPerform(Mode.Default);
+
+                    if (_motor.IsReadyToThrowGrenade && _motor.CurrentGrenade != null)
                     {
-                        if (!_motor.HasGrenadeInHand)
-                            return transitionAndPerform(Mode.Default);
+                        GrenadeDescription desc;
+                        desc.Gravity = _motor.Grenade.Gravity;
+                        desc.Duration = _motor.PotentialGrenade.Timer;
+                        desc.Bounciness = _motor.PotentialGrenade.Bounciness;
 
-                        if (_motor.IsReadyToThrowGrenade && _motor.CurrentGrenade != null)
+                        var verticalAngle = Mathf.Min(GrenadeVerticalAngleInput + ThrowAngleOffset, MaxThrowAngle);
+
+                        var velocity = _motor.Grenade.MaxVelocity;
+
+                        if (verticalAngle < 45)
+                            velocity *= Mathf.Clamp01((verticalAngle + 15) / 45f);
+
+                        _grenadePathLength = GrenadePath.Calculate(
+                            GrenadePath.Origin(_motor, GrenadeHorizontalAngleInput),
+                            GrenadeHorizontalAngleInput,
+                            verticalAngle,
+                            velocity,
+                            desc,
+                            _grenadePath,
+                            _motor.Grenade.Step);
+                        _hasGrenadePath = true;
+
+                        if (_explosionPreview == null && ExplosionPreview != null)
                         {
-                            GrenadeDescription desc;
-                            desc.Gravity = _motor.Grenade.Gravity;
-                            desc.Duration = _motor.PotentialGrenade.Timer;
-                            desc.Bounciness = _motor.PotentialGrenade.Bounciness;
-
-                            var verticalAngle = Mathf.Min(GrenadeVerticalAngleInput + ThrowAngleOffset, MaxThrowAngle);
-
-                            var velocity = _motor.Grenade.MaxVelocity;
-
-                            if (verticalAngle < 45)
-                                velocity *= Mathf.Clamp01((verticalAngle + 15) / 45f);
-
-                            _grenadePathLength = GrenadePath.Calculate(GrenadePath.Origin(_motor, GrenadeHorizontalAngleInput),
-                                                                       GrenadeHorizontalAngleInput,
-                                                                       verticalAngle,
-                                                                       velocity,
-                                                                       desc,
-                                                                       _grenadePath,
-                                                                       _motor.Grenade.Step);
-                            _hasGrenadePath = true;
-
-                            if (_explosionPreview == null && ExplosionPreview != null)
-                            {
-                                _explosionPreview = GameObject.Instantiate(ExplosionPreview);
-                                _explosionPreview.transform.SetParent(null);
-                                _explosionPreview.SetActive(true);
-                            }
-
-                            if (_explosionPreview != null)
-                            {
-                                _explosionPreview.transform.localScale = Vector3.one * _motor.PotentialGrenade.ExplosionRadius * 2;
-                                _explosionPreview.transform.position = _grenadePath[_grenadePathLength - 1];
-                            }
-
-                            if (_pathPreview == null && PathPreview != null)
-                            {
-                                _pathPreview = GameObject.Instantiate(PathPreview);
-                                _pathPreview.transform.SetParent(null);
-                                _pathPreview.SetActive(true);
-                            }
-
-                            if (_pathPreview != null)
-                            {
-                                _pathPreview.transform.position = _grenadePath[0];
-
-                                var path = _pathPreview.GetComponent<PathPreview>();
-
-                                if (path != null)
-                                {
-                                    path.Points = _grenadePath;
-                                    path.PointCount = _grenadePathLength;
-                                }
-                            }
-                        }
-                        else
-                            destroyGrenadePreview();
-
-                        if (_hasGrenadePath && _wantsToThrowGrenade)
-                        {
-                            if (ImmediateTurns)
-                                _motor.InputPossibleImmediateTurn();
-
-                            _motor.SetBodyTarget(BodyTargetInput);
-                            _motor.SetAimTarget(BodyTargetInput);
-                            _motor.InputThrowGrenade(_grenadePath, _grenadePathLength, _motor.Grenade.Step);
+                            _explosionPreview = GameObject.Instantiate(ExplosionPreview);
+                            _explosionPreview.transform.SetParent(null);
+                            _explosionPreview.SetActive(true);
                         }
 
-                        if (_wantsToCancelGrenade)
-                            _motor.InputCancelGrenade();
+                        if (_explosionPreview != null)
+                        {
+                            _explosionPreview.transform.localScale =
+                                Vector3.one * _motor.PotentialGrenade.ExplosionRadius * 2;
+                            _explosionPreview.transform.position = _grenadePath[_grenadePathLength - 1];
+                        }
 
-                        lowerArms();
+                        if (_pathPreview == null && PathPreview != null)
+                        {
+                            _pathPreview = GameObject.Instantiate(PathPreview);
+                            _pathPreview.transform.SetParent(null);
+                            _pathPreview.SetActive(true);
+                        }
 
-                        checkZoom();
-                        checkJump();
-                        checkRoll();
-                        checkClimbOrVault();
-                        checkMovement(2);
-                        checkCover();
-                        checkCrouch();
+                        if (_pathPreview != null)
+                        {
+                            _pathPreview.transform.position = _grenadePath[0];
+
+                            var path = _pathPreview.GetComponent<PathPreview>();
+
+                            if (path != null)
+                            {
+                                path.Points = _grenadePath;
+                                path.PointCount = _grenadePathLength;
+                            }
+                        }
                     }
+                    else
+                        destroyGrenadePreview();
+
+                    if (_hasGrenadePath && _wantsToThrowGrenade)
+                    {
+                        if (ImmediateTurns)
+                            _motor.InputPossibleImmediateTurn();
+
+                        _motor.SetBodyTarget(BodyTargetInput);
+                        _motor.SetAimTarget(BodyTargetInput);
+                        _motor.InputThrowGrenade(_grenadePath, _grenadePathLength, _motor.Grenade.Step);
+                    }
+
+                    if (_wantsToCancelGrenade)
+                        _motor.InputCancelGrenade();
+
+                    lowerArms();
+
+                    checkZoom();
+                    checkJump();
+                    checkRoll();
+                    checkClimbOrVault();
+                    checkMovement(2);
+                    checkCover();
+                    checkCrouch();
+                }
                     break;
 
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
                 case Mode.Melee:
+                {
+                    //// TRANSITIONS //////////////////////
+
+                    if (_motor.HasGrenadeInHand)
+                        return transitionAndPerform(Mode.Grenade);
+
+                    if (isSprinting())
+                        return transitionAndPerform(Mode.Sprint);
+
+                    if (!updateIsMelee())
+                        return transitionAndPerform(Mode.Default);
+
+                    //// LOGIC //////////////////////
+
+                    checkUnzoom();
+                    checkEquipment();
+                    checkJump();
+                    checkRoll();
+                    checkClimbOrVault();
+                    checkMovement(2);
+                    checkGrenade();
+                    checkCrouch();
+                    checkMelee();
+
+                    if (_meleeTarget != null)
                     {
-                        //// TRANSITIONS //////////////////////
+                        _motor.SetBodyTarget(_meleeTarget.transform.position);
+                        _motor.SetAimTarget(_meleeTarget.transform.position + Vector3.up * 1.5f);
+                        _motor.InputMeleeTarget(_meleeTarget.transform.position);
 
-                        if (_motor.HasGrenadeInHand)
-                            return transitionAndPerform(Mode.Grenade);
-
-                        if (isSprinting())
-                            return transitionAndPerform(Mode.Sprint);
-
-                        if (!updateIsMelee())
-                            return transitionAndPerform(Mode.Default);
-
-                        //// LOGIC //////////////////////
-
-                        checkUnzoom();
-                        checkEquipment();
-                        checkJump();
-                        checkRoll();
-                        checkClimbOrVault();
-                        checkMovement(2);
-                        checkGrenade();
-                        checkCrouch();
-                        checkMelee();
-
-                        if (_meleeTarget != null)
+                        if (!MovementInput.IsMoving)
                         {
-                            _motor.SetBodyTarget(_meleeTarget.transform.position);
-                            _motor.SetAimTarget(_meleeTarget.transform.position + Vector3.up * 1.5f);
-                            _motor.InputMeleeTarget(_meleeTarget.transform.position);
+                            var vector = _meleeTarget.transform.position - _motor.transform.position;
+                            var distance = vector.magnitude;
 
-                            if (!MovementInput.IsMoving)
+                            if (distance < MinMeleeDistance)
                             {
-                                var vector = _meleeTarget.transform.position - _motor.transform.position;
-                                var distance = vector.magnitude;
+                                var other = Characters.Get(_meleeTarget.gameObject);
 
-                                if (distance < MinMeleeDistance)
+                                if (other.Motor == null || !other.Motor.IsPerformingMelee)
                                 {
-                                    var other = Characters.Get(_meleeTarget.gameObject);
+                                    const float minMovementDuration = 0.2f;
 
-                                    if (other.Motor == null || !other.Motor.IsPerformingMelee)
-                                    {
-                                        const float minMovementDuration = 0.2f;
-
-                                        if (distance < MinMeleeDistance * 0.35f)
-                                            _motor.InputMovement(new CharacterMovement(-vector / distance, 1, minMovementDuration));
-                                        else
-                                            _motor.InputMovement(new CharacterMovement(-vector / distance, 0.5f, minMovementDuration));
-                                    }
+                                    if (distance < MinMeleeDistance * 0.35f)
+                                        _motor.InputMovement(new CharacterMovement(-vector / distance, 1,
+                                            minMovementDuration));
+                                    else
+                                        _motor.InputMovement(new CharacterMovement(-vector / distance, 0.5f,
+                                            minMovementDuration));
                                 }
                             }
                         }
                     }
+                }
                     break;
             }
 
@@ -729,8 +715,22 @@ namespace CoverShooter
             return true;
         }
 
-        /// UPDATE AND TRANSITION /////////////////////////////////////////////
+        public void WeaponFire()
+        {
+            if (_motor.IsWeaponReady)
+            {
+                _aimSustain = AimSustain;
 
+                var gun = _motor.ActiveWeapon.Gun;
+
+                if (gun != null && gun.LoadedBulletsLeft <= 0)
+                    _motor.InputReload();
+                else
+                    _motor.InputFire();
+            }
+        }
+
+        /// UPDATE AND TRANSITION /////////////////////////////////////////////
         private bool transitionAndPerform(Mode mode)
         {
             _mode = mode;
@@ -834,7 +834,6 @@ namespace CoverShooter
         }
 
         /// CHECKS /////////////////////////////////////////////
-
         private void checkLanded()
         {
             if (_motor.IsGrounded)
@@ -883,7 +882,8 @@ namespace CoverShooter
                 lowerArms();
             else
             {
-                if ((MovementInput.IsSlowedDown || MovementInput.Magnitude > 0.6f) && MovementInput.Magnitude < 1.1f && MovementInput.IsMoving && !_motor.IsClimbingOrVaulting)
+                if ((MovementInput.IsSlowedDown || MovementInput.Magnitude > 0.6f) && MovementInput.Magnitude < 1.1f &&
+                    MovementInput.IsMoving && !_motor.IsClimbingOrVaulting)
                 {
                     _armLiftTimer += Time.deltaTime;
                     _armLiftRetain = 0.1f;
@@ -1066,7 +1066,8 @@ namespace CoverShooter
             if (_wantsToTakeCover)
                 _motor.InputTakeCover();
 
-            if ((AutoTakeCover && _coverDelayWait >= CoverEnterDelay) && _motor.PotentialCover != null && !_motor.IsSprinting)
+            if ((AutoTakeCover && _coverDelayWait >= CoverEnterDelay) && _motor.PotentialCover != null &&
+                !_motor.IsSprinting)
                 _motor.InputTakeCover();
 
             if (_motor.IsGoingToSprint)

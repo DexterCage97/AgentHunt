@@ -93,7 +93,7 @@ public class InputHandler : MonoBehaviour
     public Vector2 movementInput { get; private set; }
     public Vector2 mouseMovementInput { get; private set; }
 
-    public Vector2 mouseScrollDeltaInput { get; private set; }
+    public bool mouseScrollDeltaInput { get; private set; }
 
     public bool rollLeftInput { get; private set; }
     public bool rollRightInput { get; private set; }
@@ -254,8 +254,8 @@ public class InputHandler : MonoBehaviour
         mouseMovementAction.performed += context => mouseMovementInput = context.ReadValue<Vector2>();
         mouseMovementAction.canceled += context => mouseMovementInput = Vector2.zero;
 
-        mouseScrollDeltaAction.performed += context => mouseScrollDeltaInput = context.ReadValue<Vector2>();
-        mouseScrollDeltaAction.canceled += context => mouseScrollDeltaInput = Vector2.zero;
+        mouseScrollDeltaAction.performed += context => mouseScrollDeltaInput = true;
+        mouseScrollDeltaAction.canceled += context => mouseScrollDeltaInput = false;
 
         rollLeftAction.performed += context => rollLeftInput = true;
         rollLeftAction.canceled += context => rollLeftInput = false;

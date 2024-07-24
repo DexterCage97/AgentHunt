@@ -270,7 +270,7 @@
                     "name": "MouseScrollDelta",
                     "type": "Value",
                     "id": "49cf9af4-28c0-4e43-bb79-490f95ae879d",
-                    "expectedControlType": "Vector2",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -610,7 +610,7 @@
                 {
                     "name": "",
                     "id": "4b2132a5-cb91-4e86-ad06-60aed3a743fa",
-                    "path": "<Mouse>/rightButton",
+                    "path": "<Keyboard>/f",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -654,7 +654,7 @@
                 {
                     "name": "",
                     "id": "e013ded4-9c03-4da0-9397-38dabc90245c",
-                    "path": "<Mouse>/scroll",
+                    "path": "<Keyboard>/q",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

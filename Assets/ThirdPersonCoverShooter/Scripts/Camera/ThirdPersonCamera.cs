@@ -279,7 +279,11 @@ namespace CoverShooter
                 Horizontal = Mathf.Clamp(Horizontal, MinHorizontalAngle, MaxHorizontalAngle);
                 Vertical = Mathf.Clamp(Vertical, MinVerticalAngle, MaxVerticalAngle);
             }
-
+            else
+            {
+                Horizontal = 30;
+                Vertical = 10;
+            }
             calculatePositionAndTarget(Horizontal, Vertical, _currentPivot, _currentOffset, out cameraPosition,
                 out cameraTarget);
 
