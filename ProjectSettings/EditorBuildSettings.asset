@@ -14,7 +14,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/ThirdPersonCoverShooter/Scenes/Strategy scene PC (beta).unity
     guid: cb2a66a9cdb862b489d59f2fb018fbb6
-  - enabled: 1
-    path: Assets/BANK/Scenes/Agent47 Bank.unity
+  - enabled: 0
+    path: Assets/Scenes/Agent47 Bank.unity
     guid: bfc2af4f8e6820b418809d22025e22be
+  - enabled: 1
+    path: Assets/Scenes/Jail Optimized.unity
+    guid: 1dd1712ea7f43e845bdc742d59fdd85c
   m_configObjects: {}

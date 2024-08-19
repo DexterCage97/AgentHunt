@@ -276,7 +276,7 @@ namespace CoverShooter
 
             if (IsInCover)
             {
-                Horizontal = Mathf.Clamp(Horizontal, MinHorizontalAngle, MaxHorizontalAngle);
+               // Horizontal = Mathf.Clamp(Horizontal, MinHorizontalAngle, MaxHorizontalAngle);
                 Vertical = Mathf.Clamp(Vertical, MinVerticalAngle, MaxVerticalAngle);
             }
             else
