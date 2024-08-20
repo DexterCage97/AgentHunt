@@ -1,18 +1,18 @@
 {
-    "TriggerInvestigation": true,
+    "TriggerInvestigation": false,
     "CoverInvestigationTimer": 8.0,
     "UncoveredInvestigationTimer": 1.0,
     "CoverCheckRange": 2.0,
     "HandleReceivedHits": true,
     "SetAttackerAsTarget": true,
-    "SearchIfUnknownEnemies": true,
-    "SetVisibleTargetIfNone": true,
+    "SearchIfUnknownEnemies": false,
+    "SetVisibleTargetIfNone": false,
     "UnsetDeadTargets": true,
-    "SetVeryCloseTargets": true,
+    "SetVeryCloseTargets": false,
     "SetCloseTargetThreshold": 8.0,
-    "ReactToEnemySounds": true,
-    "HearSoundSetTargetIfCurrentInvisible": true,
-    "HearSoundSearchIfNoEnemies": true,
+    "ReactToEnemySounds": false,
+    "HearSoundSetTargetIfCurrentInvisible": false,
+    "HearSoundSearchIfNoEnemies": false,
     "TriggerTargetTooClose": true,
     "TargetTooCloseThreshold": 4.0,
     "ReactToFriendTargets": true,
@@ -112,7 +112,7 @@
             "Any": {
                 "Parent": 0,
                 "EditorPosition": {
-                    "x": 197.72943115234376,
+                    "x": 197.7294921875,
                     "y": -1082.172607421875
                 },
                 "_type": "",
@@ -520,7 +520,7 @@
             {
                 "Parent": 0,
                 "EditorPosition": {
-                    "x": 418.92333984375,
+                    "x": 418.923583984375,
                     "y": -429.3900146484375
                 },
                 "_type": "",
@@ -619,7 +619,7 @@
             {
                 "Parent": 0,
                 "EditorPosition": {
-                    "x": 860.1129150390625,
+                    "x": 860.113037109375,
                     "y": -371.16552734375
                 },
                 "_type": "",
@@ -9474,7 +9474,7 @@
             {
                 "Parent": 0,
                 "EditorPosition": {
-                    "x": 508.406005859375,
+                    "x": 508.4063720703125,
                     "y": -825.5045166015625
                 },
                 "_type": "",
@@ -9795,7 +9795,7 @@
             {
                 "Parent": 0,
                 "EditorPosition": {
-                    "x": 846.3387451171875,
+                    "x": 846.3388671875,
                     "y": -858.0835571289063
                 },
                 "_type": "",

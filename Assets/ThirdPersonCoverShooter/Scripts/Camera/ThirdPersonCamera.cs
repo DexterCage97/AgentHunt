@@ -281,7 +281,7 @@ namespace CoverShooter
             }
             else
             {
-                Horizontal = 30;
+                Horizontal = 0;
                 Vertical = 10;
             }
             calculatePositionAndTarget(Horizontal, Vertical, _currentPivot, _currentOffset, out cameraPosition,

@@ -146,6 +146,7 @@ namespace CoverShooter
         /// </summary>
         public void OnTakenHit(Hit hit)
         {
+            
             Deal(hit.Damage);
         }
 
@@ -168,14 +169,16 @@ namespace CoverShooter
         /// </summary>
         public void Deal(float amount)
         {
+            
+            print(amount + gameObject.name);
             if (Health <= 0 || !IsTakingDamage)
                 return;
-
+            print(DamageMultiplier + gameObject.name);
             amount *= DamageMultiplier;
 
-            Health = Mathf.Clamp(Health - amount, 0, MaxHealth);
+            Health = Mathf.Clamp(Health - DamageMultiplier, 0, MaxHealth);
             check();
-
+print(amount + gameObject.name);
             if (Health <= 0 && _motor != null)
                 _motor.Die();
         }
